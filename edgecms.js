@@ -12,15 +12,31 @@ var edgeCMS = (function() {
         firebase.initializeApp(config);
     }
 
-    function generateToken () {
+    function generateKey () {
+        // Extract domain name
         var domainName = document.getElementById("domainName").value;
         domainName = extractDomain(domainName);
-        var domainCodeRef = firebase.database().ref().child("domains").child(domainName).child("code");
-        var newCodeRef = domainCodeRef.push(true);
-        var domainKey = newCodeRef.key;
-        domainCodeRef.set(domainKey);
+        // Dont generate token for active sites
+        var domainRef = firebase.database().ref().child("domains").child(domainName);
+        domainRef.child("pending").once("value", function (snapshot) {
+            if (snapshot.exists() && snapshot.val()===false) {
+                // site is already registered with Edge CMS
+                alert("This site has already been registered. Please contact the site owner.");
 
-        showMetaTag(domainKey);
+            } else {
+                if (!snapshot.exists()) {
+                    domainRef.child("pending").set(true);
+                }
+                // Generate unique key
+                var newCodeRef = domainRef.child("code").push(true);
+                var domainKey = newCodeRef.key;
+                domainRef.child("code").set(domainKey);
+                // Update html with token
+                showMetaTag(domainKey);
+                // Open modal
+                $('#modal1').modal("open");
+            }
+        });
     }
 
     function extractDomain(url) {
@@ -52,29 +68,43 @@ var edgeCMS = (function() {
 
     function verifySite () {
         var domainName = document.getElementById("domainName").value;
-        domainName = domainName.replace(/\./g, "~");
+        domainName = extractDomain(domainName);
+
         // Get Key from Firebase
-        firebase.database().ref().child("domains").child(domainName).child("code").once("value", function (snapshot) {
-            var firebaseKey = snapshot.val();
-            console.log(firebaseKey);
+        var p1 = new Promise((resolve, reject) => {
+            firebase.database().ref().child("domains").child(domainName).child("code").once("value", function (snapshot) {
+                var firebaseKey = snapshot.val();
+                resolve(firebaseKey);
+            });
         });
+
         // Get Key from domain
-        $.ajax({
-            type:"POST",
-            contentType: "application/json; charset=utf-8",
-            url:"https://nsk4wcwu09.execute-api.us-east-1.amazonaws.com/beta",
-            data:{url: domainName},
-            success: function(result) {
-                var domainKey = result.code;
-                console.log(domainKey);
+        var p2 = new Promise((resolve, reject) => {
+            $.ajax({
+                type:"POST",
+                contentType: "application/json; charset=utf-8",
+                url:"https://nsk4wcwu09.execute-api.us-east-1.amazonaws.com/beta",
+                data:{url: domainName},
+                success: function(result) {
+                    var domainKey = result.code;
+                    resolve(domainKey);
+                }
+            });
+        });
+
+        // Compare Key from Firebase vs. from domain
+        Promise.all([p1, p2]).then(values => {
+            if (values[0] === values[1]) {
+                alert("Success");
+            } else {
+                alert("Nope");
             }
         });
-        // Compare Key from Firebase vs. from domain
     }
 
     function addListeners () {
         var generateKeyBtn = document.getElementById("generateKeyBtn");
-        generateKeyBtn.addEventListener("click", generateToken);
+        generateKeyBtn.addEventListener("click", generateKey);
         var verifySiteBtn = document.getElementById("doneButton");
         verifySiteBtn.addEventListener("click", verifySite);
     }
