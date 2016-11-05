@@ -1,6 +1,9 @@
 var edgeCMS = (function() {
     var edgeCMS = {};
 
+    var domainUrl;
+    var domainName;
+
     function prepareFirebase() {
         var config = {
             apiKey: "AIzaSyBuWvVLmh4NGzfzsGBKIqmRsR9BtVJF1zE",
@@ -14,9 +17,9 @@ var edgeCMS = (function() {
 
     function generateKey () {
         // Extract domain name
-        var domainName = document.getElementById("domainName").value;
-        domainName = extractDomain(domainName);
-        // Dont generate token for active sites
+        domainUrl = document.getElementById("domainName").value;
+        domainName = extractDomain(domainUrl);
+
         var domainRef = firebase.database().ref().child("domains").child(domainName);
         domainRef.child("pending").once("value", function (snapshot) {
             if (snapshot.exists() && snapshot.val()===false) {
@@ -67,9 +70,6 @@ var edgeCMS = (function() {
     }
 
     function verifySite () {
-        var domainName = document.getElementById("domainName").value;
-        domainName = extractDomain(domainName);
-
         // Get Key from Firebase
         var p1 = new Promise((resolve, reject) => {
             firebase.database().ref().child("domains").child(domainName).child("code").once("value", function (snapshot) {
@@ -84,7 +84,7 @@ var edgeCMS = (function() {
                 type:"POST",
                 contentType: "application/json; charset=utf-8",
                 url:"https://nsk4wcwu09.execute-api.us-east-1.amazonaws.com/beta",
-                data:{url: domainName},
+                data:{url: domainUrl},
                 success: function(result) {
                     var domainKey = result.code;
                     resolve(domainKey);
@@ -95,6 +95,7 @@ var edgeCMS = (function() {
         // Compare Key from Firebase vs. from domain
         Promise.all([p1, p2]).then(values => {
             if (values[0] === values[1]) {
+                firebase.database().ref().child("domains").child(domainName).child("pending").set(false);
                 alert("Success");
             } else {
                 alert("Nope");
