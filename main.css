@@ -28,6 +28,7 @@
 
 body {
   height: 100vh;
+  color: #202020;
 }
 #modal1 {
   border-radius: 20px;
@@ -42,4 +43,40 @@ body {
 }
 #generateKeyBtn {
   font-size: 1.8em;
+}
+#loginModal {
+  top: 10%;
+  bottom: 10%; 
+}
+
+.dark-field input[type=text], 
+.dark-field input[type=password] {
+  color: #202020;
+  border-bottom: 1px solid #202020;
+}
+/* label color */
+.dark-field label {
+  color: #202020;
+}
+/* label focus color */
+.dark-field input[type=text]:focus + label,
+.dark-field input[type=password]:focus + label {
+  color: #202020;
+}
+/* label underline focus color */
+.dark-field input[type=text]:focus,
+.dark-field input[type=password]:focus {
+  border-bottom: 1px solid #202020;
+  box-shadow: 0 1px 0 0 #202020;
+}
+.dark-field input[type=text].valid,
+.dark-field input[type=password].valid {
+  border-bottom: 1px solid #202020;
+  box-shadow: 0 1px 0 0 #202020;
+}
+/* invalid color */
+.dark-field input[type=text].invalid,
+.dark-field input[type=password].invalid {
+  border-bottom: 1px solid #202020;
+  box-shadow: 0 1px 0 0 #202020;
 }

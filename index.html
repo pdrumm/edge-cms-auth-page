@@ -16,7 +16,6 @@
    <button data-target="modal1" id="generateKeyBtn" class="btn btn-large col s6 offset-s3 white blue-text waves-effect waves-blue">Generate</button>
   </div>
 
-  <!-- Modal Structure -->
   <div id="modal1" class="modal">
     <div class="modal-content">
       <div class="row">
@@ -29,6 +28,30 @@
       </div>
     </div>
   </div>
+
+  <div id="loginModal" class="modal">
+    <div class="modal-content valign-wrapper blue lighten-5" style="height: 100%;">
+      <div class="row valign" style="width: 100%;">
+        <h2 class="thin col s12 center">Login</h2>
+        <div class="row">
+          <form class="col s12" id="loginForm">
+            <div class="row">
+              <div class="dark-field input-field col s12">
+                <input id="email" type="text" class="validate">
+                <label for="email">Email</label>
+              </div>
+              <div class="dark-field input-field col s12">
+                <input id="password" type="password" class="validate">
+                <label for="password">Password</label>
+              </div>
+              <button type="submit" class="btn btn-large col s12 blue white-text waves-effect">Log In</button>
+            </div>
+          </form>
+        </div>
+        <button data-target="signUpModal" class="btn btn-large col s12 blue white-text waves-effect">Sign Up</button>
+      </div>
+    </div>
+  </div>
           
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"></script>
@@ -37,9 +60,31 @@
   <script src="./edgecms.js"></script>
   <script>
     edgeCMS.begin();
+
     $(document).ready(function(){
-      $('.modal').modal({
+      $('#modal1').modal({
+        dismissible: true
+      });
+      $('#loginModal').modal({
         dismissible: false
+      });
+      $('#signUpModal').modal({
+        dismissible: true
+      });
+
+      firebase.auth().onAuthStateChanged(function(user) {
+        if (user) {
+          $("#loginModal").modal("close");
+        } else {
+          $("#loginModal").modal("open");
+        }
+      });      
+    });
+
+    $("#loginForm").on('submit', function(event) {
+      event.preventDefault();
+      firebase.auth().signInWithEmailAndPassword($("#email").val(), $("#password").val()).catch(function(error) {
+        console.log(error);
       });
     });
   </script>
