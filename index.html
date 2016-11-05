@@ -3,29 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <title>Edge CMS Auth Page</title>
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/css/materialize.min.css">
+    <link rel="stylesheet" href="main.css">
 </head>
-<body>
-    <div>
-        Domain:
-        <input id="domainName" type="text"/>
-    </div>
-    <div>
-        <input value="Generate" id="generateKeyBtn" type="button"/>
-    </div>
-    <div>
-        Edge CMS Key:
-        <input id="edgeCmsKey" type="text" readonly/>
-        <button id="copyBtn" class="btn" data-clipboard-action="copy">
-            <img src="./clippy.png" alt="Copy to clipboard" style="width:16px; height:16px;">
-        </button>
-    </div>
+<body class="blue valign-wrapper">
+  <div class="row valign container">
+   <h2 class="white-text thin center">Edge CMS</h2>
+   <div class="input-field col s12">
+    <input id="domainName" type="text" class="thin">
+    <label for="domainName">Domain Name</label>
+   </div>
+   <button data-target="modal1" id="generateKeyBtn" class="btn btn-large col s6 offset-s3 white blue-text waves-effect waves-blue">Generate</button>
+  </div>
 
-    <script src="https://www.gstatic.com/firebasejs/3.4.1/firebase.js"></script>
-    <script src="https://cdn.jsdelivr.net/clipboard.js/1.5.13/clipboard.min.js"></script>
-    <script src="./edgecms.js"></script>
-    <script>
-        edgeCMS.begin();
-    </script>
+  <!-- Modal Structure -->
+  <div id="modal1" class="modal">
+    <div class="modal-content">
+      <div class="row">
+        <h4 class="thin col s12">Paste this line of code onto your page to prove ownership:</h4>
+        <input id="edgeCmsKey" class="thin col s9" type="text" readonly/>
+        <button id="copyBtn" class="btn blue col offset-s1 s2 waves-effect waves-light" data-clipboard-action="copy">
+          <img src="./clippy.png" alt="Copy to clipboard" style="width:16px; height:16px;">
+        </button>
+        <button id="doneButton" class="modal-action modal-close btn col s6 offset-s3 transparent blue-text">Done</button>
+      </div>
+    </div>
+  </div>
+          
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/3.4.1/firebase.js"></script>
+  <script src="https://cdn.jsdelivr.net/clipboard.js/1.5.13/clipboard.min.js"></script>
+  <script src="./edgecms.js"></script>
+  <script>
+    edgeCMS.begin();
+    $(document).ready(function(){
+      $('.modal').modal({
+        dismissible: false
+      });
+    });
+  </script>
 </body>
 </html>
