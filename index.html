@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edge CMS Auth Page</title>
+
+</head>
+<body>
+    <div>
+        Domain:
+        <input id="domainName" type="text"/>
+    </div>
+    <div>
+        <input value="Generate" id="generateKeyBtn" type="button"/>
+    </div>
+    <div>
+        Edge CMS Key:
+        <input id="edgeCmsKey" type="text" readonly/>
+        <button id="copyBtn" class="btn" data-clipboard-action="copy">
+            <img src="./clippy.png" alt="Copy to clipboard" style="width:16px; height:16px;">
+        </button>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/3.4.1/firebase.js"></script>
+    <script src="https://cdn.jsdelivr.net/clipboard.js/1.5.13/clipboard.min.js"></script>
+    <script src="./edgecms.js"></script>
+    <script>
+        edgeCMS.begin();
+    </script>
+</body>
+</html>
