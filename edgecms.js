@@ -15,6 +15,31 @@
         firebase.initializeApp(config);
     }
 
+    var watchScrolls = true;
+    $("#scrollDownButton").on("click", function() {
+      console.log("click");
+      watchScrolls = false;
+      $('html, body').animate({
+        scrollTop: $("#domainListWrapper").offset().top - 30
+      }, 1000, "linear", function() {
+        watchScrolls = true;
+      });
+    });
+
+    var lastScrollPos = 0;
+    $( window ).scroll(function() {
+      var newScrollPos = $(window).scrollTop();
+      if(newScrollPos > lastScrollPos && newScrollPos < 100 && watchScrolls) {
+        watchScrolls = false;
+        $('html, body').animate({
+          scrollTop: $("#domainListWrapper").offset().top - 30
+        }, 800, "linear", function() {
+          watchScrolls = true;
+        });
+      }
+      lastScrollPos = newScrollPos;
+    });
+
     function generateKey () {
         // Extract domain name
         domainUrl = document.getElementById("domainName").value;
