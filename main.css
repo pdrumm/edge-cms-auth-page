@@ -30,7 +30,7 @@ body {
   height: 100vh;
   color: #202020;
 }
-#modal1 {
+#codeModal {
   border-radius: 20px;
 }
 #domainName {
@@ -44,9 +44,15 @@ body {
 #generateKeyBtn {
   font-size: 1.8em;
 }
-#loginModal {
+#loginModal, #signUpModal {
   top: 10%;
   bottom: 10%; 
+}
+#logoutButton {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  color: white;
 }
 
 .dark-field input[type=text], 

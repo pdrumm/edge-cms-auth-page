@@ -16,7 +16,7 @@
    <button id="generateKeyBtn" class="btn btn-large col s6 offset-s3 white blue-text waves-effect waves-blue">Generate</button>
   </div>
 
-  <div id="modal1" class="modal">
+  <div id="codeModal" class="modal">
     <div class="modal-content">
       <div class="row">
         <h4 class="thin col s12">Paste this line of code onto your page to prove ownership:</h4>
@@ -26,6 +26,16 @@
         </button>
         <button id="doneButton" class="modal-action modal-close btn col s6 offset-s3 transparent blue-text">Done</button>
       </div>
+    </div>
+  </div>
+
+  <div id="messageModal" class="modal">
+    <div class="modal-content">
+      <h4 id="title" class="thin"></h4>
+      <p id="message">A bunch of text</p>
+    </div>
+    <div class="modal-footer">
+      <a class="modal-action modal-close waves-effect waves-light blue white-text btn-flat">Done</a>
     </div>
   </div>
 
@@ -52,6 +62,35 @@
       </div>
     </div>
   </div>
+
+  <div id="signUpModal" class="modal">
+    <div class="modal-content valign-wrapper blue lighten-5" style="height: 100%;">
+      <div class="row valign" style="width: 100%;">
+        <h2 class="thin col s12 center">Sign Up</h2>
+        <div class="row">
+          <form class="col s12" id="signUpForm">
+            <div class="row">
+              <div class="dark-field input-field col s12">
+                <input id="signUpEmail" type="text" class="validate">
+                <label for="signUpEmail">Email</label>
+              </div>
+              <div class="dark-field input-field col s12">
+                <input id="signUpPassword" type="password" class="validate">
+                <label for="signUpPassword">Password</label>
+              </div>
+              <div class="dark-field input-field col s12">
+                <input id="signUpPassword2" type="password" class="validate">
+                <label for="signUpPassword2">Password Again</label>
+              </div>
+              <button type="submit" class="btn btn-large col s12 blue white-text waves-effect">Sign Up</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <a id="logoutButton">Log Out</a>
           
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"></script>
@@ -61,8 +100,8 @@
   <script>
     edgeCMS.begin();
 
-    $(document).ready(function(){
-      $('#modal1').modal({
+    $(document).ready(function() {
+      $('#codeModal').modal({
         dismissible: true
       });
       $('#loginModal').modal({
@@ -71,14 +110,31 @@
       $('#signUpModal').modal({
         dismissible: true
       });
+      $('#messageModal').modal({
+        dismissible: true,
+        starting_top: '25%',
+        ending_top: '35%'
+      });
 
       firebase.auth().onAuthStateChanged(function(user) {
         if (user) {
           $("#loginModal").modal("close");
+          $("#signUpModal").modal("close");
         } else {
           $("#loginModal").modal("open");
         }
       });      
+    });
+
+    function showMessage(title, message) {
+      $("#title").text(title);
+      $("#message").text(message);
+      $("#messageModal").modal("open");
+    }
+    showMessage("ALERT", "I need everyone to stop what they're doing");
+
+    $("#logoutButton").on('click', function() {
+      firebase.auth().signOut();
     });
 
     $("#loginForm").on('submit', function(event) {
@@ -86,6 +142,17 @@
       firebase.auth().signInWithEmailAndPassword($("#email").val(), $("#password").val()).catch(function(error) {
         console.log(error);
       });
+    });
+
+    $("#signUpForm").on('submit', function(event) {
+      event.preventDefault();
+      if ($("#signUpPassword").val() === $("#signUpPassword2").val()) {
+        firebase.auth().createUserWithEmailAndPassword($("#signUpEmail").val(), $("#signUpPassword").val()).catch(function(error) {
+          console.log(error);j
+        });
+      } else {
+        console.log("Passwords must match");
+      }
     });
   </script>
 </body>

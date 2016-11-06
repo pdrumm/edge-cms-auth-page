@@ -24,7 +24,7 @@ var edgeCMS = (function() {
         domainRef.child("pending").once("value", function (snapshot) {
             if (snapshot.exists() && snapshot.val()===false) {
                 // site is already registered with Edge CMS
-                alert("This site has already been registered. Please contact the site owner.");
+                showMessage("Authentication Error", "This site has already been registered. Please contact the site owner.");
 
             } else {
                 if (!snapshot.exists()) {
@@ -37,7 +37,7 @@ var edgeCMS = (function() {
                 // Update html with token
                 showMetaTag(domainKey);
                 // Open modal
-                $('#modal1').modal("open");
+                $('#codeModal').modal("open");
             }
         });
     }
@@ -96,9 +96,9 @@ var edgeCMS = (function() {
         Promise.all([p1, p2]).then(values => {
             if (values[0] === values[1]) {
                 firebase.database().ref().child("domains").child(domainName).child("pending").set(false);
-                alert("Success");
+                showMessage("Success!", "Your domain ownership has been verified.");
             } else {
-                alert("Nope");
+                showMessage("Error", "We couldn't find the necessary meta tag on your site.");
             }
         });
     }
