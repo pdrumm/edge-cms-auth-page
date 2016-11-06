@@ -1,4 +1,4 @@
-var edgeCMS = (function() {
+(function() {
     var edgeCMS = {};
 
     var domainUrl;
@@ -103,6 +103,15 @@ var edgeCMS = (function() {
         });
     }
 
+    function updateDomainList () {
+        console.log(user);
+        firebase.database().ref().child("users").child(user.uid).child("domains").on("value", function(snapshot) {
+            
+        });
+        //firebase.database().ref().child()
+        //$("#domainsList")
+    }
+
     function addListeners () {
         var generateKeyBtn = document.getElementById("generateKeyBtn");
         generateKeyBtn.addEventListener("click", generateKey);
@@ -110,11 +119,65 @@ var edgeCMS = (function() {
         verifySiteBtn.addEventListener("click", verifySite);
     }
 
-    edgeCMS.begin = function () {
+    $(document).ready(function () {
         new Clipboard('.btn');
         prepareFirebase();
         addListeners();
-    };
+    });
 
-    return edgeCMS;
+    $(document).ready(function(){
+        $('#codeModal').modal({
+            dismissible: true
+        });
+        $('#loginModal').modal({
+            dismissible: false
+        });
+        $('#signUpModal').modal({
+            dismissible: true
+        });
+        $('#messageModal').modal({
+            dismissible: true,
+            starting_top: '25%',
+            ending_top: '35%'
+        });
+
+        firebase.auth().onAuthStateChanged(function(user) {
+            if (user) {
+                $("#loginModal").modal("close");
+                $("#signUpModal").modal("close");
+            } else {
+                $("#loginModal").modal("open");
+            }
+        });
+    });
+
+    function showMessage(title, message) {
+        $("#title").text(title);
+        $("#message").text(message);
+        $("#messageModal").modal("open");
+    }
+    showMessage("ALERT", "I need everyone to stop what they're doing");
+
+    $("#logoutButton").on('click', function() {
+        firebase.auth().signOut();
+    });
+
+    $("#loginForm").on('submit', function(event) {
+        event.preventDefault();
+        firebase.auth().signInWithEmailAndPassword($("#email").val(), $("#password").val()).catch(function(error) {
+            console.log(error);
+        });
+    });
+
+    $("#signUpForm").on('submit', function(event) {
+        event.preventDefault();
+        if ($("#signUpPassword").val() === $("#signUpPassword2").val()) {
+            firebase.auth().createUserWithEmailAndPassword($("#signUpEmail").val(), $("#signUpPassword").val()).catch(function(error) {
+                console.log(error);j
+            });
+        } else {
+            console.log("Passwords must match");
+        }
+    });
+
 }());

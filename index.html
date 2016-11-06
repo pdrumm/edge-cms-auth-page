@@ -6,7 +6,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/css/materialize.min.css">
     <link rel="stylesheet" href="main.css">
 </head>
-<body class="blue valign-wrapper">
+<body class="blue">
+  <div id="registerNewDomainWrapper" class="valign-wrapper">
   <div class="row valign container">
    <h2 class="white-text thin center">Edge CMS</h2>
    <div class="input-field col s12">
@@ -14,6 +15,14 @@
     <label for="domainName">Domain Name</label>
    </div>
    <button id="generateKeyBtn" class="btn btn-large col s6 offset-s3 white blue-text waves-effect waves-blue">Generate</button>
+  </div>
+  </div>
+
+  <div class="valign-wrapper">
+  <div class="row valign container">
+   <h2 class="white-text thin center">List</h2>
+   <ul id="domainsList"></ul>
+  </div>
   </div>
 
   <div id="codeModal" class="modal">
@@ -91,69 +100,11 @@
   </div>
 
   <a id="logoutButton">Log Out</a>
-          
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"></script>
   <script src="https://www.gstatic.com/firebasejs/3.4.1/firebase.js"></script>
   <script src="https://cdn.jsdelivr.net/clipboard.js/1.5.13/clipboard.min.js"></script>
   <script src="./edgecms.js"></script>
-  <script>
-    edgeCMS.begin();
-
-    $(document).ready(function() {
-      $('#codeModal').modal({
-        dismissible: true
-      });
-      $('#loginModal').modal({
-        dismissible: false
-      });
-      $('#signUpModal').modal({
-        dismissible: true
-      });
-      $('#messageModal').modal({
-        dismissible: true,
-        starting_top: '25%',
-        ending_top: '35%'
-      });
-
-      firebase.auth().onAuthStateChanged(function(user) {
-        if (user) {
-          $("#loginModal").modal("close");
-          $("#signUpModal").modal("close");
-        } else {
-          $("#loginModal").modal("open");
-        }
-      });      
-    });
-
-    function showMessage(title, message) {
-      $("#title").text(title);
-      $("#message").text(message);
-      $("#messageModal").modal("open");
-    }
-    showMessage("ALERT", "I need everyone to stop what they're doing");
-
-    $("#logoutButton").on('click', function() {
-      firebase.auth().signOut();
-    });
-
-    $("#loginForm").on('submit', function(event) {
-      event.preventDefault();
-      firebase.auth().signInWithEmailAndPassword($("#email").val(), $("#password").val()).catch(function(error) {
-        console.log(error);
-      });
-    });
-
-    $("#signUpForm").on('submit', function(event) {
-      event.preventDefault();
-      if ($("#signUpPassword").val() === $("#signUpPassword2").val()) {
-        firebase.auth().createUserWithEmailAndPassword($("#signUpEmail").val(), $("#signUpPassword").val()).catch(function(error) {
-          console.log(error);j
-        });
-      } else {
-        console.log("Passwords must match");
-      }
-    });
-  </script>
 </body>
 </html>

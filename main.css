@@ -27,9 +27,13 @@
 }
 
 body {
-  height: 100vh;
   color: #202020;
 }
+
+#registerNewDomainWrapper {
+  height: 100vh;
+}
+
 #codeModal {
   border-radius: 20px;
 }
