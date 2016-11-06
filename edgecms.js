@@ -204,6 +204,9 @@
     var user;
 
     $(document).ready(function(){
+        $('#howToModal').modal({
+            dismissible: true
+        });
         $('#codeModal').modal({
             dismissible: true
         });
@@ -248,6 +251,10 @@
 
     $("#logoutButton").on('click', function() {
         firebase.auth().signOut();
+    });
+
+    $("#howToButton").on('click', function() {
+        $("#howToModal").modal('open');
     });
 
     $("#loginForm").on('submit', function(event) {

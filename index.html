@@ -42,7 +42,23 @@
   <div id="messageModal" class="modal">
     <div class="modal-content">
       <h4 id="title" class="thin"></h4>
-      <p id="message">A bunch of text</p>
+      <p id="message"></p>
+    </div>
+    <div class="modal-footer">
+      <a class="modal-action modal-close waves-effect waves-light blue white-text btn-flat">Done</a>
+    </div>
+  </div>
+
+  <div id="howToModal" class="modal">
+    <div class="modal-content">
+      <h4 id="title" class="thin">How To Use</h4>
+      <p id="message"></p>
+      <ol>
+        <li>Register your domain name that you own here</li>
+        <li>Add the meta tag we give you to your page's source</li>
+        <li>Add Edge CMS's js and css files from our cdn</li>
+        <li>Any elements on your page with class "edge-cms" and a data-key-name attribute will become editable</li>
+      </ol>
     </div>
     <div class="modal-footer">
       <a class="modal-action modal-close waves-effect waves-light blue white-text btn-flat">Done</a>
@@ -100,6 +116,7 @@
     </div>
   </div>
 
+  <a id="howToButton">How To</a>
   <button id="scrollDownButton" class="transparent" style="border: none;">
     <i class="material-icons" id="arrow">keyboard_arrow_down</i>
   </button>
