@@ -141,15 +141,22 @@
         firebase.database().ref().child("users").child(user.uid).child("domains").on("child_added", function(snapshot) {
             var domain = snapshot.key;
             var $li = $('<li></li>')[0];
-            var $divHeader = $('<div class="collapsible-header blue white-text">' + domain + '</div>')[0];
+            var $divHeader = $('<div class="collapsible-header blue white-text">' + domain.replace(/~/g,".") + '</div>')[0];
             var $divBody = $('<div class="collapsible-body blue-text"></div>')[0];
             firebase.database().ref().child("domains").child(domain).child("users").on("child_added", function(snapshot) {
                 var uid = snapshot.key;
+                var status = snapshot.val();
                 firebase.database().ref().child("users").child(uid).once("value", function(snapshot) {
                     var email = snapshot.val().email;
                     var $divRow = $('<div class="valign-wrapper" style="height: 55px;"></div>')[0];
-                    $divRow.append($('<div class="col s10 offset-s1 valign">'+email+'</div>')[0]);
-                    $divRow.append($('<a class="btn-floating btn waves-effect waves-light red valign"><i class="material-icons">delete</i></a>')[0]);
+                    $divRow.append($('<div class="col s10 offset-s1 valign">'+email+' : '+status+'</div>')[0]);
+                    //$divRow.append($('<a class="btn-floating btn waves-effect waves-light red valign delete-user" data="'+uid+'"><i class="material-icons" style="pointer-events: none">delete</i></a>')[0]);
+                    var $a = $('<a class="btn-floating btn waves-effect waves-light red valign delete-user"><i class="material-icons" style="pointer-events: none">delete</i></a>');
+                    $a.data("uid", uid);
+                    $a.data("domain", domain);
+                    var $i = $('<i class="material-icons" style="pointer-events: none">delete</i>')[0];
+                    $a.append($i);
+                    $divRow.append($a[0]);
                     $divBody.append($divRow);
                     $divBody.append($('<hr/>')[0]);
                 });
@@ -161,6 +168,22 @@
             $("#domainListWrapper").css("display", "block")
         });
     }
+
+    $("div#domainListWrapper").on("click", function(event) {
+        var e = $(event.target);
+        if (e.hasClass("delete-user")) {
+            var uid = e.data("uid");
+            var domain = e.data("domain");
+            if (uid === user.uid) {
+                showMessage("Error", "You may not delete yourself as a user.");
+            } else {
+                firebase.database().ref().child("domains").child(domain).child("users").child(uid).remove();
+                firebase.database().ref().child("users").child(uid).child("domains").child(domain).remove();
+                e.parent().next()[0].remove();
+                e.parent()[0].remove();
+            }
+        }
+    });
 
     function addListeners () {
         var generateKeyBtn = document.getElementById("generateKeyBtn");
