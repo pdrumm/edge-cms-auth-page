@@ -92,11 +92,19 @@
             });
         });
 
-        // Compare Key from Firebase vs. from domain
+        // Compare key from Firebase vs. key from domain
         Promise.all([p1, p2]).then(values => {
             if (values[0] === values[1]) {
-                firebase.database().ref().child("domains").child(domainName).child("pending").set(false);
+                // Add user to domains tree
+                var domainRef = firebase.database().ref().child("domains").child(domainName);
+                domainRef.child("users").child(user.uid).set("owner");
+                // Add domain to users tree
+                firebase.database().ref().child("users").child(user.uid).child("domains").child(domainName).set(true);
+                // Switch domain from pending to active
+                domainRef.child("pending").set(false);
+                // Show the user success message
                 showMessage("Success!", "Your domain ownership has been verified.");
+
             } else {
                 showMessage("Error", "We couldn't find the necessary meta tag on your site.");
             }
@@ -104,12 +112,29 @@
     }
 
     function updateDomainList () {
-        console.log(user);
-        firebase.database().ref().child("users").child(user.uid).child("domains").on("value", function(snapshot) {
-            
+        var domainList = $("#domainList")[0];
+        firebase.database().ref().child("users").child(user.uid).child("domains").on("child_added", function(snapshot) {
+            var domain = snapshot.key;
+            var $li = $('<li></li>')[0];
+            var $divHeader = $('<div class="collapsible-header blue white-text">' + domain + '</div>')[0];
+            var $divBody = $('<div class="collapsible-body blue-text"></div>')[0];
+            firebase.database().ref().child("domains").child(domain).child("users").on("child_added", function(snapshot) {
+                var uid = snapshot.key;
+                firebase.database().ref().child("users").child(uid).once("value", function(snapshot) {
+                    var email = snapshot.val().email;
+                    var $divRow = $('<div class="valign-wrapper" style="height: 55px;"></div>')[0];
+                    $divRow.append($('<div class="col s10 offset-s1 valign">'+email+'</div>')[0]);
+                    $divRow.append($('<a class="btn-floating btn waves-effect waves-light red valign"><i class="material-icons">delete</i></a>')[0]);
+                    $divBody.append($divRow);
+                    $divBody.append($('<hr/>')[0]);
+                });
+            });
+            $li.append($divHeader);
+            $li.append($divBody);
+            domainList.append($li);
+            // *for the first child added* reveal the domains list
+            $("#domainListWrapper").css("display", "block")
         });
-        //firebase.database().ref().child()
-        //$("#domainsList")
     }
 
     function addListeners () {
@@ -124,6 +149,11 @@
         prepareFirebase();
         addListeners();
     });
+
+    /*
+    Authentication
+     */
+    var user;
 
     $(document).ready(function(){
         $('#codeModal').modal({
@@ -141,8 +171,10 @@
             ending_top: '35%'
         });
 
-        firebase.auth().onAuthStateChanged(function(user) {
-            if (user) {
+        firebase.auth().onAuthStateChanged(function(_user) {
+            if (_user) {
+                user = _user;
+                updateDomainList();
                 $("#loginModal").modal("close");
                 $("#signUpModal").modal("close");
 

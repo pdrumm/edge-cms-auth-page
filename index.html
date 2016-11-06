@@ -5,9 +5,10 @@
     <title>Edge CMS Auth Page</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/css/materialize.min.css">
     <link rel="stylesheet" href="main.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
-<body class="blue">
-  <div id="registerNewDomainWrapper" class="valign-wrapper">
+<body>
+  <div id="registerNewDomainWrapper" class="blue valign-wrapper">
   <div class="row valign container">
    <h2 class="white-text thin center">Edge CMS</h2>
    <div class="input-field col s12">
@@ -18,10 +19,10 @@
   </div>
   </div>
 
-  <div class="valign-wrapper">
-  <div class="row valign container">
-   <h2 class="white-text thin center">List</h2>
-   <ul id="domainsList"></ul>
+  <div id="domainListWrapper">
+  <div class="row container">
+   <h2 class="blue-text thin center">Your Domains</h2>
+   <ul id="domainList" class="collapsible popout" data-collapsible="accordian"></ul>
   </div>
   </div>
 

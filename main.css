@@ -34,6 +34,11 @@ body {
   height: 100vh;
 }
 
+#domainListWrapper {
+  display: none;
+  height: 100vh;
+}
+
 #codeModal {
   border-radius: 20px;
 }
@@ -53,10 +58,11 @@ body {
   bottom: 10%; 
 }
 #logoutButton {
-  position: fixed;
+  position: absolute;
   bottom: 20px;
   right: 20px;
   color: white;
+  cursor: pointer;
 }
 
 .dark-field input[type=text], 
@@ -89,4 +95,9 @@ body {
 .dark-field input[type=password].invalid {
   border-bottom: 1px solid #202020;
   box-shadow: 0 1px 0 0 #202020;
+}
+
+hr {
+  margin-top: 0;
+  margin-bottom: 0;
 }
