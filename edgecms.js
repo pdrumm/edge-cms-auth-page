@@ -177,10 +177,16 @@
             if (uid === user.uid) {
                 showMessage("Error", "You may not delete yourself as a user.");
             } else {
-                firebase.database().ref().child("domains").child(domain).child("users").child(uid).remove();
-                firebase.database().ref().child("users").child(uid).child("domains").child(domain).remove();
-                e.parent().next()[0].remove();
-                e.parent()[0].remove();
+                $("#deleteUserModal").modal("open");
+
+                $("#yes-delete").on("click", function () {
+                    firebase.database().ref().child("domains").child(domain).child("users").child(uid).remove();
+                    firebase.database().ref().child("users").child(uid).child("domains").child(domain).remove();
+                    if (e.parent().next()[0] != undefined) {
+                        e.parent().next()[0].remove();
+                    }
+                    e.parent()[0].remove();
+                });
             }
         }
     });
@@ -221,6 +227,11 @@
             starting_top: '25%',
             ending_top: '35%'
         });
+        $('#deleteUserModal').modal({
+            dismissible: true,
+            starting_top: '25%',
+            ending_top: '35%'
+        });
 
         firebase.auth().onAuthStateChanged(function(_user) {
             if (_user) {
@@ -247,7 +258,6 @@
         $("#message").text(message);
         $("#messageModal").modal("open");
     }
-    showMessage("ALERT", "I need everyone to stop what they're doing");
 
     $("#logoutButton").on('click', function() {
         firebase.auth().signOut();
