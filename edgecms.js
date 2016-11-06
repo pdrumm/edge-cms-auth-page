@@ -145,6 +145,14 @@
             if (user) {
                 $("#loginModal").modal("close");
                 $("#signUpModal").modal("close");
+
+                // Add user to db if not already there
+                var ref = firebase.database().ref().child("users");
+                ref.once('value').then(function(snapshot) {
+                  if (!snapshot.hasChild(user.uid)) {
+                    ref.child(user.uid).set({email: user.email});
+                  }
+                });
             } else {
                 $("#loginModal").modal("open");
             }
